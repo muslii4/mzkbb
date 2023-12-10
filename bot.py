@@ -35,4 +35,8 @@ async def elektryczne(interaction):
 async def scania(interaction):
     await interaction.response.send_message(buses.getScaniaBuses())
 
+@tree.command(name = "specjalne", description = "Wypisuje listę autobusów nietypowych")
+async def scania(interaction):
+    await interaction.response.send_message(buses.getSpecialBuses())
+
 client.run(buses.apikey["bot_secret"])

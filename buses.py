@@ -93,3 +93,16 @@ def getNumberOfScanias():
         return str(n) + " Scanię na ulicach miasta"
     if n >= 2 and n <= 4:
         return str(n) + " Scanie na ulicach miasta"
+
+def getSpecialBuses():
+    buses = getBuses()
+    special = json.load(open("/home/muslii4/mzk/special.json", "r"))
+
+    msg = ""
+    for i in buses:
+        if i["vehicleId"] in special:
+            msg += special[i["vehicleId"]] + " " + message(i)
+
+    if msg == "":
+        msg = "jak ktoś tu jest specjalny to ty"
+    return msg
