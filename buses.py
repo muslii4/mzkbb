@@ -3,7 +3,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import json
 
-path = r"/home/muslii4/mzk/"
+path = r"/home/sv/mzkbb/"
 runningVehiclesURL = "https://rozklady.bielsko.pl/getRunningVehicles.json"
 
 with open(path + "apikey2.json") as f:
@@ -90,13 +90,13 @@ def getNumberOfScanias():
     if n == 0 or n >= 5:
         return str(n) + " Scani na ulicach miasta"
     if n == 1:
-        return str(n) + " Scanię na ulicach miasta"
+        return str(n) + " Scania na ulicach miasta"
     if n >= 2 and n <= 4:
         return str(n) + " Scanie na ulicach miasta"
 
 def getSpecialBuses():
     buses = getBuses()
-    special = json.load(open("/home/muslii4/mzk/special.json", "r"))
+    special = json.load(open(f"{path}special.json", "r"))
 
     msg = ""
     for i in buses:
@@ -106,3 +106,11 @@ def getSpecialBuses():
     if msg == "":
         msg = "jak ktoś tu jest specjalny to ty"
     return msg
+
+
+if __name__ == "__main__":
+    print(getRemainingBuses())
+    print(getElectricBuses())
+    print(getScaniaBuses())
+    print(getNumberOfScanias())
+    print(getSpecialBuses())
