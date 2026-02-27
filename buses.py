@@ -29,7 +29,7 @@ for i in names:
 
 def message(bus):
     try:
-        return bus["vehicleId"] + ": " + bus["lineName"] + " na " + stops[bus["nearestSymbol"]] + " do " + bus["optionalDirection"] + "\n"
+        return bus["vehicleId"] + ": " + bus["lineName"] + " na " + stops.get(bus["nearestSymbol"], bus["nearestSymbol"]) + " do " + bus["optionalDirection"] + "\n"
     except KeyError as e:
         return e
 
