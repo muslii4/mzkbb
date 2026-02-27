@@ -2,6 +2,7 @@ import requests
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import json
+import sheets_db
 
 path = r"/home/sv/mzkbb/"
 runningVehiclesURL = "https://rozklady.bielsko.pl/getRunningVehicles.json"
@@ -36,30 +37,26 @@ def getBuses():
     res = requests.get(runningVehiclesURL)
     return res.json()["vehicles"]
 
-def getRemainingBuses():
-    existingBuses = []
+def getElectricBuses():
     buses = getBuses()
-    vals = sheet.get_all_values()
-
-    for i in vals:
-        if i[2] != "":
-            existingBuses.append(i[0])
+    electric_buses = sheets_db.get_electric_bus_numbers()
 
     msg = ""
     for i in buses:
-        if i["vehicleId"] not in existingBuses:
+        if i["vehicleId"] in electric_buses:
             msg += message(i)
 
     if msg == "":
-        msg = "brak"
+        msg = "przykro mi, nie istnieją"
     return msg
 
-def getElectricBuses():
+def getHybridBuses():
     buses = getBuses()
+    hybrid_buses = sheets_db.get_hybrid_bus_numbers()
 
     msg = ""
     for i in buses:
-        if int(i["vehicleId"]) > 226:
+        if i["vehicleId"] in hybrid_buses:
             msg += message(i)
 
     if msg == "":
@@ -68,10 +65,11 @@ def getElectricBuses():
 
 def getScaniaBuses():
     buses = getBuses()
+    scania_buses = sheets_db.get_scania_bus_numbers()
 
     msg = ""
     for i in buses:
-        if 158 <= int(i["vehicleId"]) <= 167:
+        if i["vehicleId"] in scania_buses:
             msg += message(i)
 
     if msg == "":
@@ -82,10 +80,11 @@ def getScaniaBuses():
 
 def getNumberOfScanias():
     buses = getBuses()
+    scania_buses = sheets_db.get_scania_bus_numbers()
     
     n = 0
     for i in buses:
-        if 158 <= int(i["vehicleId"]) <= 167:
+        if i["vehicleId"] in scania_buses:
             n += 1
     if n == 0 or n >= 5:
         return str(n) + " Scani na ulicach miasta"
@@ -96,12 +95,12 @@ def getNumberOfScanias():
 
 def getSpecialBuses():
     buses = getBuses()
-    special = json.load(open(f"{path}special.json", "r"))
+    special_buses = sheets_db.get_special_buses()
 
     msg = ""
     for i in buses:
-        if i["vehicleId"] in special:
-            msg += special[i["vehicleId"]] + " " + message(i)
+        if i["vehicleId"] in special_buses:
+            msg += special_buses[i["vehicleId"]] + " " + message(i)
 
     if msg == "":
         msg = "jak ktoś tu jest specjalny to ty"
@@ -109,7 +108,6 @@ def getSpecialBuses():
 
 
 if __name__ == "__main__":
-    print(getRemainingBuses())
     print(getElectricBuses())
     print(getScaniaBuses())
     print(getNumberOfScanias())
